@@ -65,9 +65,7 @@ public class SimpleThreadPool extends Thread {
     /**
      * 默认拒绝策略-抛出异常
      */
-    public static final DiscardPolicy DEFAULT_DISCARD_POLICY = () -> {
-        throw new DiscardException("Discard This Task.");
-    };
+    public static final DiscardPolicy  DEFAULT_DISCARD_POLICY = DiscardPolicy.DEFAULT_DISCARD_POLICY;
 
     /**
      * 线程名自增序号
@@ -92,7 +90,7 @@ public class SimpleThreadPool extends Thread {
     /**
      * 线程队列
      */
-    private static final List<WorkerTask> THREAD_QUEUE = new ArrayList<>();
+    private static final List<WorkTask> THREAD_QUEUE = new ArrayList<>();
 
     public SimpleThreadPool() {
         this(DEFAULT_MIN_SIZE, DEFAULT_ACTIVE_SIZE, DEFAULT_MAX_SIZE, DEFAULT_TASK_QUEUE_SIZE, DEFAULT_DISCARD_POLICY);
@@ -141,11 +139,11 @@ public class SimpleThreadPool extends Thread {
                     if (size > active && TASK_QUEUE.isEmpty()) {
                         System.out.println("=========Reduce=========");
                         int releaseSize = size - active;
-                        for (Iterator<WorkerTask> it = THREAD_QUEUE.iterator(); it.hasNext(); ) {
+                        for (Iterator<WorkTask> it = THREAD_QUEUE.iterator(); it.hasNext(); ) {
                             if (releaseSize <= 0) {
                                 break;
                             }
-                            WorkerTask task = it.next();
+                            WorkTask task = it.next();
                             task.interrupt();
                             task.close();
                             it.remove();
@@ -167,7 +165,7 @@ public class SimpleThreadPool extends Thread {
     }
 
     private void createWorkTask() {
-        WorkerTask task = new WorkerTask(GROUP, THREAD_PREFIX + (sequence.getAndIncrement()));
+        WorkTask task = new WorkTask(GROUP, THREAD_PREFIX + (sequence.getAndIncrement()));
         task.start();
         THREAD_QUEUE.add(task);
     }
@@ -206,8 +204,8 @@ public class SimpleThreadPool extends Thread {
         synchronized (THREAD_QUEUE) {
             int initVal = THREAD_QUEUE.size();
             while (initVal > 0) {
-                for (WorkerTask task : THREAD_QUEUE) {
-                    if (task.getTaskState() == TaskState.BLOCKED) {
+                for (WorkTask task : THREAD_QUEUE) {
+                    if (task.getTaskState() == WorkTask.TaskState.BLOCKED) {
                         task.interrupt();
                         task.close();
                         initVal--;
@@ -247,75 +245,6 @@ public class SimpleThreadPool extends Thread {
         return queueSize;
     }
 
-    /**
-     * 封装任务类
-     */
-    private static class WorkerTask extends Thread {
-        private volatile TaskState taskState = TaskState.FREE;
-
-        public TaskState getTaskState() {
-            return this.taskState;
-        }
-
-        public WorkerTask(ThreadGroup group, String name) {
-            super(group, name);
-        }
-
-        @Override
-        public void run() {
-            OUTER:
-            while (this.taskState != TaskState.DEAD) {
-                Runnable runnable;
-                synchronized (TASK_QUEUE) {
-                    // 任务队列为空，则进入阻塞状态
-                    while (TASK_QUEUE.isEmpty()) {
-                        try {
-                            this.taskState = TaskState.BLOCKED;
-                            TASK_QUEUE.wait();
-                        } catch (InterruptedException e) {
-                            System.out.println("Closed.");
-                            break OUTER;
-                        }
-                    }
-                    // 任务队列不为空，取出任务
-                    runnable = TASK_QUEUE.removeFirst();
-                }
-                // 任务不为空，则执行任务
-                if (runnable != null) {
-                    this.taskState = TaskState.RUNNING;
-                    runnable.run();
-                    this.taskState = TaskState.FREE;
-                }
-            }
-        }
-
-        public void close() {
-            this.taskState = TaskState.DEAD;
-        }
-    }
-
-    /**
-     * 线程状态
-     */
-    private enum TaskState {
-        FREE, RUNNING, BLOCKED, DEAD
-    }
-
-    /**
-     * 拒绝策略
-     */
-    public interface DiscardPolicy {
-        void discard() throws DiscardException;
-    }
-
-    /**
-     * 拒绝策略异常
-     */
-    public static class DiscardException extends RuntimeException {
-        public DiscardException(String message) {
-            super(message);
-        }
-    }
 
     public static void main(String[] args) throws InterruptedException {
         SimpleThreadPool threadPool = new SimpleThreadPool();
