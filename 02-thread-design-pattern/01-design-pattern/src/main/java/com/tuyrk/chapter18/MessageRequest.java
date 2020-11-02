@@ -10,5 +10,14 @@ package com.tuyrk.chapter18;
  */
 public abstract class MessageRequest {
 
+    protected final Servant servant;
+
+    protected final FutureResult futureResult;
+
+    protected MessageRequest(Servant servant, FutureResult futureResult) {
+        this.servant = servant;
+        this.futureResult = futureResult;
+    }
+
     public abstract void execute();
 }
