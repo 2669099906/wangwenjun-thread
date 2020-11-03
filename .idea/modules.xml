@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/02-thread-design-pattern/01-design-pattern/01-design-pattern.iml" filepath="$PROJECT_DIR$/02-thread-design-pattern/01-design-pattern/01-design-pattern.iml" />
+      <module fileurl="file://$PROJECT_DIR$/01-thread-base/01-thread-base.iml" filepath="$PROJECT_DIR$/01-thread-base/01-thread-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/02-thread-design-pattern/02-class-loader/02-class-loader.iml" filepath="$PROJECT_DIR$/02-thread-design-pattern/02-class-loader/02-class-loader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/02-thread-design-pattern/02-thread-design-pattern.iml" filepath="$PROJECT_DIR$/02-thread-design-pattern/02-thread-design-pattern.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wangwenjun-thread.iml" filepath="$PROJECT_DIR$/wangwenjun-thread.iml" />
+    </modules>
+  </component>
+</project>

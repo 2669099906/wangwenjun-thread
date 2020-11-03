@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="01-thread-base" />
+        <module name="02-thread-design-pattern" />
+        <module name="01-design-pattern" />
+        <module name="wangwenjun-thread" />
+        <module name="02-class-loader" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="01-design-pattern" target="1.8" />
+      <module name="01-thread-base" target="1.8" />
+      <module name="02-class-loader" target="1.8" />
+      <module name="02-thread-design-pattern" target="1.8" />
+      <module name="wangwenjun-thread" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="01-design-pattern" options="-parameters" />
+      <module name="01-thread-base" options="-parameters" />
+      <module name="02-class-loader" options="-parameters" />
+      <module name="02-thread-design-pattern" options="-parameters" />
+      <module name="wangwenjun-thread" options="-parameters" />
+    </option>
+  </component>
+</project>
